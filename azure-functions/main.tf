@@ -33,7 +33,7 @@ resource "azurerm_storage_account" "example" {
   account_replication_type = "${element(split("_", var.boot_diagnostics_sa_type),1)}"
 
   tags = {
-    environment = "${var.staging}"
+    environment = "${var.environment}"
   }
 }
 
