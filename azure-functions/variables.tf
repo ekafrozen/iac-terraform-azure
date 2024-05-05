@@ -30,11 +30,6 @@ variable "sku_name" {
   default = ""
 }
 
-variable "function_app_id" {
-  description = "ID app"
-  default = ""
-}
-
 variable "language" {
   description = "Jezyk"
 }
