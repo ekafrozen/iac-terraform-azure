@@ -21,32 +21,32 @@ resource "docker_container" "nginx" {
   name  = "tutorial"
 
 resource "azurerm_resource_group" "example" {
-  name     = "example"
-  location = "West Europe"
+  name     = "${var.name}"
+  location = "${var.location}"
 }
 
 resource "azurerm_storage_account" "example" {
-  name                     = "storageaccountname"
+  name                     = "${var.storageaccountname}"
   resource_group_name      = azurerm_resource_group.example.name
   location                 = azurerm_resource_group.example.location
-  account_tier             = "Standard"
-  account_replication_type = "GRS"
+  account_tier             = "${element(split("_", var.boot_diagnostics_sa_type),0)}"
+  account_replication_type = "${element(split("_", var.boot_diagnostics_sa_type),1)}"
 
   tags = {
-    environment = "staging"
+    environment = "${var.staging}"
   }
 }
 
 resource "azurerm_service_plan" "example" {
-  name                = "example"
+  name                = "${var.example}"
   resource_group_name = azurerm_resource_group.example.name
   location            = azurerm_resource_group.example.location
-  os_type             = "Linux"
-  sku_name            = "P1v2"
+  os_type             = "${var.os_type}"
+  sku_name            = "${var.sku_name}"
 }
 
 resource "azurerm_linux_function_app" "example" {
-  name                = "example-linux-function-app"
+  name                = "${var.name}"
   resource_group_name = azurerm_resource_group.example.name
   location            = azurerm_resource_group.example.location
 
@@ -58,28 +58,28 @@ resource "azurerm_linux_function_app" "example" {
 }
 
 resource "azurerm_function_app_function" "example" {
-  name            = "example-function-app-function"
-  function_app_id = azurerm_linux_function_app.example.id
-  language        = "Python"
+  name            = "${var.name}"
+  function_app_id = "${var.function_app_id}"
+  language        = "${var.language}"
   test_data = jsonencode({
-    "name" = "Azure"
+    "name" = "${var.name}"
   })
   config_json = jsonencode({
     "bindings" = [
       {
-        "authLevel" = "function"
-        "direction" = "in"
+        "authLevel" = "${var.authLevel}"
+        "direction" = "${var.direction}"
         "methods" = [
           "get",
           "post",
         ]
-        "name" = "req"
-        "type" = "httpTrigger"
+        "name" = "${var.name}"
+        "type" = "${var.type}"
       },
       {
-        "direction" = "out"
-        "name"      = "$return"
-        "type"      = "http"
+        "direction" = "${var.direction}"
+        "name"      = "${var.name}"
+        "type"      = "${var.type}"
       },
     ]
   })
